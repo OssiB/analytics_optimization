@@ -1,0 +1,75 @@
+---
+title: "Assignment 1"
+output:
+  html_document:
+    fig_height: 6
+    highlight: espresso
+    theme: journal
+---
+### Exercise 1
+
+Dataset contains information collected by **WHO**. 
+We read the data using **read.csv2** function. 
+
+```{r}
+require(lattice)
+require(ggplot2)
+library(GGally)
+setwd("~/Development/analytics_optimization")
+who <- read.csv2(file="data/WHO.csv",header=TRUE,sep = ",",stringsAsFactors=FALSE)
+
+```
+Next we clean the data removing missing values and converting strings to numeric values
+
+```{r}
+who_cleaned <- who[complete.cases(who),]
+numeric_cols = c(3:9)
+who_cleaned[,numeric_cols] = apply(who_cleaned[,numeric_cols], 2, function(x) as.numeric(as.character(x)))
+summary(who_cleaned)
+```
+
+### Explanotorary analysis
+#### Histograms
+
+```{r}
+setwd("~/Development/analytics_optimization")
+hist(who_cleaned[,"LifeExpectancy"],ylab = "Number of countries",xlab = "Years",main = "Life expectancy",co="Maroon",label=T)
+```
+
+#### Pair correlation
+
+```{r}
+pairs(who_cleaned[numeric_cols])
+````
+
+### Exercise 2 
+
+#### Timeseries methods
+
+##### Naive forecast
+
+$$F_{t+1} = D_t$$
+
+```{r}
+setwd("~/Development/analytics_optimization")
+naive <- function(timeseries) {
+  tail(timeseries,n=1)
+}
+naive("datasets/timeseries.csv")
+```
+##### Simple moving average
+
+$$F_{t+1} =  \frac{\sum_{i=t}^{t-n}{D_i}}{n}$$
+
+```{r}
+sma <- function(timeseries,N) {
+  sum(tail(timeseries,N))/N
+}
+```
+##### Weighted average
+
+$$F_{t+1} = \sum_{i=t}^{t-n}{w_i\cdot D_t}$$
+ 
+where 
+$$\sum_{i=t}^{t-n}{w_i} =1 $$ 
+
