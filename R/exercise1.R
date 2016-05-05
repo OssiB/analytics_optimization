@@ -23,6 +23,10 @@ leaps<-regsubsets(LifeExpectancy ~ Under15 + Over60 + FertilityRate + ChildMorta
 summary(leaps)
 plot(leaps,scale ="r2")
 #Let's try two a) ChilMortality b) ChildMortality + Under15
+
+#MASS eliminate variable one by one
+library(MASS)
+stepAIC(all_lm,direction = "backward")
 #Exercise Part 2
 timeseries_data <- scan("data/timeseries.csv")
 #Helper function, which return N elements from vector before index i
