@@ -18,6 +18,11 @@ all_lm <- lm(LifeExpectancy ~ Under15 + Over60 + FertilityRate + ChildMortality 
 summary(all_lm)
 # Under15 and ChildMortality are the most important variables
 library(leaps)
+leaps<-regsubsets(LifeExpectancy ~ Under15 + Over60 + FertilityRate + ChildMortality + CellularSubscribers + Population ,data=who_numeric,nbest=4)
+# view results 
+summary(leaps)
+plot(leaps,scale ="r2")
+#Let's try two a) ChilMortality b) ChildMortality + Under15
 #Exercise Part 2
 timeseries_data <- scan("data/timeseries.csv")
 #Helper function, which return N elements from vector before index i
