@@ -89,9 +89,13 @@ for (w in weights){
   errors_wma[index] <- MAPE(timeseries_data,weighted_ma(timeseries_data,c(w,1-w)));
   index <- index +1;
 }
-
-err
-
+index <- 1 
+alphas <- seq(0,1,by = 0.01)
+errors_smooth <- rep(0,length(alphas))
+for (alpha  in alphas) {
+  errors_smooth[index] <- MAPE(timeseries_data,exp_smoothing(timeseries_data,alpha));
+  index <- index +1;
+}
 
 
 
