@@ -2,46 +2,51 @@
 #who <- read.csv2(file ="data/WHO.csv,header =TRUE")
 
 timeseries_data <- scan("data/timeseries.csv")
-
+#Helper function, which return N elements from vector before index i
+lastN <- function(timeseries,N,i){
+     start <- i - N
+     end <- i- 1
+     timeseries[start:end]
+}
 naiv  <- function(timeseries) {
 	first <- timeseries[1];
 	last_index <- length(timeseries) - 1
 	data <- c(first,timeseries_data[1:last_index]);
 	data;
 }
-naiv_error  <- mean_abs_percent_error(timeseries_data,naiv(timeseries_data)) 
+
 
 mav <- function(timeseries,N = 2) {
 
 	data <- vector();
 	data[1:N] <- timeseries[1:N];
 	last_index <- length(timeseries);
-	for (index  in N:last_index) {
-        data[index] <- mean(timeseries[(index + 1-N) :index]);
+	for (index  in N:last_index-1) {
+        data[index+1] <- mean(lastN(timeseries,N,index+1));
     }
     data;
 }
-mav_error <- mean_abs_percent_error(timeseries_data,mav(timeseries_data))
 
+
+#Weighted moving average,optimize the value of the weight w 
 weighted_ma <- function(timeseries,weights){
 
 	data <- vector();
 	size <- length(weights);
 	last_index <- length(timeseries);
 	data[1:size] <- timeseries[1:size];
-	for (index  in size:last_index) {
-        data[index] <- sum(timeseries[(index + 1 - size) : index] * weights);
-    }
-    data;
+	for (index  in size:(last_index-1)) {
+        data[index+1] <- sum(lastN(timeseries,size,index+1)*weights);
+  }
+  data;
 }
-
+#Exponential smoothing, first value as inital forecast 
 exp_smoothing <- function(timeseries,alpha) {
-
 	data <- vector()
-	data[1] <- timeseries[1]
+	data[1] <- mean(timeseries[1:2])
 	x <- data[1]
 	for (index in 2:length(timeseries)){
-		data[index] <- alpha*x +(1- alpha)*timeseries[index-1]
+		data[index] <- alpha*timeseries[index-1] +(1- alpha)*data[index-1];
 	}
 	data;
 }
@@ -66,8 +71,30 @@ mean_abs_squared <- function(timeseries,estimate){
 	mean((timeseries - estimate)^2)
 }
 
-mean_abs_percent_error  <- function(timeseries,estimate) {
-    mean(abs((timeseries - estimate)/estimate)
+MAPE  <- function(timeseries,estimate) {
+    mean(abs((timeseries - estimate)/timeseries))
 }
+# Method error calculation
+method_errors <- rep(0,4)
+methods <- c("naive","ma","wma","expsm")
+# Naive error 
+methods["naive"] <- MAPE(timeseries_data,naiv(timeseries_data))
+# Mean value error
+methods["ma"] <- MAPE(timeseries_data,mav(timeseries_data))
+# Optimize w using values 0,0.01 ..,0.99,1.00
+index <- 1 
+weights <- seq(0,1,by = 0.01)
+errors_wma <- rep(0,length(weights))
+for (w in weights){
+  errors_wma[index] <- MAPE(timeseries_data,weighted_ma(timeseries_data,c(w,1-w)));
+  index <- index +1;
+}
+
+err
+
+
+
+
+
 
 
