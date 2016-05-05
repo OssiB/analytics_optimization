@@ -1,6 +1,24 @@
-#setwd("~/Development/analytics_optimiztion")
-#who <- read.csv2(file ="data/WHO.csv,header =TRUE")
-
+setwd("~/Development/analytics_optimiztion")
+#Exercise 1 Part 1
+who <- read.table(file="data/WHO.csv",header=TRUE,sep = ",",colClasses = c("factor","factor",rep("numeric",7)))
+head(who)
+str(who)
+summary(who)
+pairs(who([,2:9]))
+library(car)
+scatterplotMatrix(who[3:9])
+#There is a strong negative correlation between life expectancy and child mortality
+cor(who[3:9])
+who_numeric <- who[3:9]
+lapply(who_numeric,shapiro.test)
+#Only Cellular Subscribers distribution is normal
+#First try 
+attach(who_numeric)
+all_lm <- lm(LifeExpectancy ~ Under15 + Over60 + FertilityRate + ChildMortality + CellularSubscribers + Population )
+summary(all_lm)
+# Under15 and ChildMortality are the most important variables
+library(leaps)
+#Exercise Part 2
 timeseries_data <- scan("data/timeseries.csv")
 #Helper function, which return N elements from vector before index i
 lastN <- function(timeseries,N,i){
