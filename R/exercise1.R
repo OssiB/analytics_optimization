@@ -17,13 +17,16 @@ attach(who_numeric)
 all_lm <- lm(LifeExpectancy ~ Under15 + Over60 + FertilityRate + ChildMortality + CellularSubscribers + Population )
 summary(all_lm)
 # Under15 and ChildMortality are the most important variables
+final_model <- lm(LifeExpectancy ~ Under15 + ChildMortality)
+summary(final_model)
 library(leaps)
 leaps<-regsubsets(LifeExpectancy ~ Under15 + Over60 + FertilityRate + ChildMortality + CellularSubscribers + Population ,data=who_numeric,nbest=4)
 # view results 
 summary(leaps)
 plot(leaps,scale ="r2")
-#Let's try two a) ChilMortality b) ChildMortality + Under15
-
+#Let's try two ChildMortality + Under15 +Under15:ChildMortality, if they have any interaction
+final_model2 <- lm(LifeExpectancy ~ Under15 + ChildMortality+Under15:ChildMortality )
+summary(final_model2)
 #MASS eliminate variable one by one
 library(MASS)
 stepAIC(all_lm,direction = "backward")

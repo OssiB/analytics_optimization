@@ -1,20 +1,24 @@
 ---
 title: "Assignment 1"
 output:
+  pdf_document: default
   html_document:
     fig_height: 6
     highlight: espresso
     theme: journal
 ---
 ### Exercise 1
-
+### leaps
+### shapiro
+### corr
+### summary
+### pairs
 Dataset contains information collected by **WHO**. 
 We read the data using **read.csv2** function. 
 
 ```{r}
 require(lattice)
 require(ggplot2)
-library(GGally)
 setwd("~/Development/analytics_optimization")
 who <- read.csv2(file="data/WHO.csv",header=TRUE,sep = ",",stringsAsFactors=FALSE)
 
