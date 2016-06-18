@@ -17,7 +17,7 @@
 # RStudio files
 .Rproj.user/
 .DS_Store
-
+*.doc
 
 *.pdf
 
